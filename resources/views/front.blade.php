@@ -65,7 +65,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                            <a href="">
-                               Shopping cart
+                               <cartwidget></cartwidget>
                             </a>
                         </li>
                     </ul>
@@ -84,6 +84,7 @@
 </body>
 
     <!--   Core JS Files   -->
+    <script src="assets/js/cart-widget.js" type="text/javascript"></script>
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
     <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 
