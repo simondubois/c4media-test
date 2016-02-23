@@ -6,12 +6,12 @@ module.exports = {
 
     entry: [
         'vue',
-        path.join(__dirname, 'webpack', 'cart-widget.js'),
+        path.join(__dirname, 'webpack', 'front.js'),
     ],
 
     output: {
         path: path.join(__dirname, 'public', 'assets', 'js'),
-        filename: 'cart-widget.js',
+        filename: 'front.js',
     },
 
     module: {

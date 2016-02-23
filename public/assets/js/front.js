@@ -9749,6 +9749,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(Vue) {
 	var CartWidget = __webpack_require__(4)
+	var OrderButton = __webpack_require__(7)
 
 	// custome filters
 	Vue.filter('price', function (price, currency) {
@@ -9756,12 +9757,20 @@
 	})
 
 	// mount a root Vue instance
-	new Vue({
+	var frontVm = new Vue({
 	    el: 'body',
 	    components: {
 	        cartwidget: CartWidget,
+	        orderbutton: OrderButton,
 	    },
+	    events: {
+	        'update-cart': function (msg) {
+	            // on update-cart event from OrderButton, send back message to CartWidget
+	            this.$broadcast('update-cart', msg)
+	        }
+	    }
 	})
+
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
@@ -9773,7 +9782,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] webpack/cart-widget/App.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] webpack/front/CartWidget.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(6)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -9784,7 +9793,7 @@
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), true)
 	  if (!hotAPI.compatible) return
-	  var id = "/home/sel/www/c4media-test/webpack/cart-widget/App.vue"
+	  var id = "/home/sel/www/c4media-test/webpack/front/CartWidget.vue"
 	  if (!module.hot.data) {
 	    hotAPI.createRecord(id, module.exports)
 	  } else {
@@ -9819,6 +9828,11 @@
 	            }
 	            return this.productQuantity + ' products';
 	        }
+	    },
+	    events: {
+	        'update-cart': function updateCart(msg) {
+	            console.log(msg);
+	        }
 	    }
 	};
 
@@ -9827,6 +9841,70 @@
 /***/ function(module, exports) {
 
 	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"totalPrice\">\n        ({{ totalPrice | price currency }})\n    </template>\n</a>\n\n";
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(8)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] webpack/front/OrderButton.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(9)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/sel/www/c4media-test/webpack/front/OrderButton.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 8 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.default = {
+	    props: ['productId', 'inputQuantity', 'action'],
+	    computed: {
+	        quantity: function quantity() {
+	            return $(this.inputQuantity).val();
+	        },
+	        message: function message() {
+	            return {
+	                action: this.action,
+	                productId: this.productId,
+	                quantity: this.quantity
+	            };
+	        }
+	    },
+	    methods: {
+	        updateCart: function updateCart() {
+	            this.$dispatch('update-cart', this.message);
+	        }
+	    }
+	};
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<button class='btn btn-primary' v-on:click=\"updateCart\">\n    <i class='fa fa-fw fa-cart-plus'></i>\n    Add to card\n</button>\n\n";
 
 /***/ }
 /******/ ]);

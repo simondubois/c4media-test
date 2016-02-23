@@ -64,7 +64,7 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                           <cartwidget></cartwidget>
+                           <cartwidget v-ref:cartwidget></cartwidget>
                         </li>
                     </ul>
                 </div>
@@ -82,10 +82,11 @@
 </body>
 
     <!--   Core JS Files   -->
-    <script src="assets/js/cart-widget.js" type="text/javascript"></script>
+    <script src="assets/js/front.js" type="text/javascript"></script>
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
     <script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
 
+    @yield('script')
     <!--  Notifications Plugin    -->
     <script src="assets/js/bootstrap-notify.js"></script>
 

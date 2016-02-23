@@ -33,7 +33,13 @@
                 }
                 return this.productQuantity + ' products'
             }
-        }
+        },
+        events: {
+            'update-cart': function (msg) {
+                // on button click, send update-cart event to parent
+                console.log(msg)
+            },
+        },
     }
 
 </script>

@@ -23,13 +23,14 @@
                         <td>@percentage($product->vat)</td>
                         <td>@price($product->price_including_vat)</td>
                         <td class="form-group">
-                            <input type="text" class="form-control" value="1" size="3">
+                            <input type="text" class="form-control" id="quantity-product-{{ $product->id }}" value="1" size="3">
                         </td>
                         <td>
-                            <button class='btn btn-primary'>
-                                <i class='fa fa-fw fa-cart-plus'></i>
-                                Add to card
-                            </button>
+                            <orderbutton
+                                product-id="{{ $product->id }}"
+                                input-quantity="#quantity-product-{{ $product->id }}"
+                                action='add'
+                            ></orderbutton>
                         </td>
                     </tr>
                 @endforeach
