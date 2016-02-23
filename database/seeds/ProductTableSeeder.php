@@ -17,7 +17,7 @@ class ProductTableSeeder extends Seeder
      */
     public function run()
     {
-        $path = storage_path($this->filenme);
+        $path = storage_path($this->filename);
         $products = $this->readProductsFromJsonFile($path);
 
         // Insert products into database
