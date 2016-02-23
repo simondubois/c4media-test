@@ -9750,6 +9750,11 @@
 	/* WEBPACK VAR INJECTION */(function(Vue) {
 	var CartWidget = __webpack_require__(4)
 
+	// custome filters
+	Vue.filter('price', function (price, currency) {
+	  return price.toFixed(2) + ' ' + currency
+	})
+
 	// mount a root Vue instance
 	new Vue({
 	    el: 'body',
@@ -9791,18 +9796,37 @@
 /* 5 */
 /***/ function(module, exports) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
-	exports.default = {};
+	exports.default = {
+	    data: function data() {
+	        return {
+	            productQuantity: 1,
+	            totalPrice: 150,
+	            currency: 'SEK'
+	        };
+	    },
+	    computed: {
+	        title: function title() {
+	            if (this.productQuantity == 0) {
+	                return 'No product';
+	            }
+	            if (this.productQuantity == 1) {
+	                return this.productQuantity + ' product';
+	            }
+	            return this.productQuantity + ' products';
+	        }
+	    }
+	};
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"app\">\nTest\n</div>\n";
+	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"totalPrice\">\n        ({{ totalPrice | price currency }})\n    </template>\n</a>\n\n";
 
 /***/ }
 /******/ ]);

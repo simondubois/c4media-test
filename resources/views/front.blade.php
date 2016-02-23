@@ -64,9 +64,7 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                           <a href="">
-                               <cartwidget></cartwidget>
-                            </a>
+                           <cartwidget></cartwidget>
                         </li>
                     </ul>
                 </div>
