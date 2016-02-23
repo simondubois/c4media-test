@@ -32,13 +32,33 @@
                     return this.productQuantity + ' product'
                 }
                 return this.productQuantity + ' products'
-            }
+            },
+            resource: function () {
+                return this.$resource('cart');
+            },
         },
         events: {
             'update-cart': function (msg) {
-                // on button click, send update-cart event to parent
-                console.log(msg)
+                // on update-cart event, update cart on server
+                if (msg.action === 'add') {
+                    this.addProduct(msg.productId, msg.quantity)
+                }
             },
+        },
+        methods: {
+            addProduct: function (productId, quantity) {
+                var entity = {
+                    productId: productId,
+                    quantity: quantity,
+                }
+                this.resource.save({}, entity).then(function (response) {
+                    // success callback
+                    console.log(response)
+                }, function (response) {
+                    // error callback
+                    console.log(response)
+                });
+            }
         },
     }
 

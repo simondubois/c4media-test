@@ -2,6 +2,11 @@
 var CartWidget = require('./front/CartWidget.vue')
 var OrderButton = require('./front/OrderButton.vue')
 
+// Setup vue-resource
+Vue.use(require('vue-resource'))
+Vue.http.options.root = '/api'
+Vue.http.options.headers['X-CSRF-TOKEN'] = document.querySelectorAll('meta[name="csrf-token"]')[0].getAttribute('content')
+
 // custome filters
 Vue.filter('price', function (price, currency) {
   return price.toFixed(2) + ' ' + currency
