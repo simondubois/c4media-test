@@ -11,7 +11,7 @@
                 <th>Name</th>
                 <th>Code</th>
                 <th>VAT</th>
-                <th>Price</th>
+                <th>Price (incl. VAT)</th>
                 <th>Quantity</th>
                 <th>Order</th>
             </thead>
@@ -21,7 +21,7 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->code }}</td>
                         <td>@percentage($product->vat)</td>
-                        <td>@price($product->price)</td>
+                        <td>@price($product->price_including_vat)</td>
                         <td class="form-group">
                             <input type="text" class="form-control" value="1" size="3">
                         </td>
