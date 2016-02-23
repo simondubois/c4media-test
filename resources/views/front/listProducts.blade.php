@@ -8,8 +8,8 @@
     <div class="table-responsive">
         <table class="table table-hover table-striped">
             <thead>
-                <th>Code</th>
                 <th>Name</th>
+                <th>Code</th>
                 <th>VAT</th>
                 <th>Price</th>
                 <th>Quantity</th>
@@ -18,8 +18,8 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
-                        <td>{{ $product->code }}</td>
                         <td>{{ $product->name }}</td>
+                        <td>{{ $product->code }}</td>
                         <td>@percentage($product->vat)</td>
                         <td>@price($product->price)</td>
                         <td class="form-group">
