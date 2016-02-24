@@ -24,6 +24,7 @@ class Cart extends Model
         return [
             'price' => $this->price_including_vat,
             'quantity' => $this->quantity,
+            'currency' => config('core.currency'),
         ];
     }
 
@@ -51,7 +52,6 @@ class Cart extends Model
         $quantity = 0;
 
         foreach ($this->products as $product) {
-            echo "[".$product->id." => ".$product->pivot->quantity."]";
             $quantity += intval($product->pivot->quantity);
         }
 
