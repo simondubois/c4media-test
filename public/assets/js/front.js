@@ -9848,7 +9848,7 @@
 	        return {
 	            item: {
 	                quantity: 0,
-	                price: 0,
+	                price_including_vat: 0,
 	                currency: null
 	            }
 	        };
@@ -9921,7 +9921,7 @@
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"item.price\">\n        ({{ item.price | price item.currency }})\n    </template>\n</a>\n\n";
+	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"item.price_including_vat\">\n        ({{ item.price_including_vat | price item.currency }})\n    </template>\n</a>\n\n";
 
 /***/ },
 /* 7 */
@@ -10049,7 +10049,8 @@
 	        return {
 	            item: {
 	                quantity: 0,
-	                price: 0,
+	                price_excluding_vat: 0,
+	                price_including_vat: 0,
 	                currency: null,
 	                vat: 0,
 	                products: []
@@ -12090,7 +12091,7 @@
 /* 44 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<div class=\"table-responsive\" _v-5a90050a=\"\">\n    <table class=\"table table-hover table-striped\" _v-5a90050a=\"\">\n        <thead _v-5a90050a=\"\">\n            <tr _v-5a90050a=\"\"><th _v-5a90050a=\"\">Name</th>\n            <th _v-5a90050a=\"\">Code</th>\n            <th _v-5a90050a=\"\">Unit price (incl. VAT)</th>\n            <th _v-5a90050a=\"\">Quantity</th>\n            <th _v-5a90050a=\"\">Total price (incl. VAT)</th>\n            <th _v-5a90050a=\"\">Update order</th>\n        </tr></thead>\n        <tbody _v-5a90050a=\"\">\n            <template v-for=\"product in item.products\">\n                <product :item=\"product\" :currency=\"item.currency\" _v-5a90050a=\"\"></product>\n            </template>\n        </tbody>\n        <tfoot _v-5a90050a=\"\">\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total excl. VAT</td>\n                <td _v-5a90050a=\"\">{{ item.price - item.vat }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total VAT</td>\n                <td _v-5a90050a=\"\">{{ item.vat }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total incl. VAT</td>\n                <td _v-5a90050a=\"\">{{ item.price }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n        </tfoot>\n    </table>\n</div>\n\n";
+	module.exports = "\n\n<div class=\"table-responsive\" _v-5a90050a=\"\">\n    <table class=\"table table-hover table-striped\" _v-5a90050a=\"\">\n        <thead _v-5a90050a=\"\">\n            <tr _v-5a90050a=\"\"><th _v-5a90050a=\"\">Name</th>\n            <th _v-5a90050a=\"\">Code</th>\n            <th _v-5a90050a=\"\">Unit price (incl. VAT)</th>\n            <th _v-5a90050a=\"\">Quantity</th>\n            <th _v-5a90050a=\"\">Total price (incl. VAT)</th>\n            <th _v-5a90050a=\"\">Update order</th>\n        </tr></thead>\n        <tbody _v-5a90050a=\"\">\n            <template v-for=\"product in item.products\">\n                <product :item=\"product\" :currency=\"item.currency\" _v-5a90050a=\"\"></product>\n            </template>\n        </tbody>\n        <tfoot _v-5a90050a=\"\">\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total excl. VAT</td>\n                <td _v-5a90050a=\"\">{{ item.price_excluding_vat | price item.currency }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total VAT</td>\n                <td _v-5a90050a=\"\">{{ item.price_including_vat - item.price_excluding_vat | price item.currency }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n\n            <tr _v-5a90050a=\"\">\n                <td colspan=\"4\" _v-5a90050a=\"\">Total incl. VAT</td>\n                <td _v-5a90050a=\"\">{{ item.price_including_vat | price item.currency }}</td>\n                <td _v-5a90050a=\"\"></td>\n            </tr>\n        </tfoot>\n    </table>\n</div>\n\n";
 
 /***/ }
 /******/ ]);

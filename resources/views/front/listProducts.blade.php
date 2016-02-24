@@ -20,7 +20,7 @@
                     <tr>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->code }}</td>
-                        <td>@percentage($product->vat)</td>
+                        <td>@percentage($product->vat_rate)</td>
                         <td>@price($product->price_including_vat)</td>
                         <td class="form-group">
                             <input type="text" class="form-control" id="quantity-product-{{ $product->id }}" value="1" size="3">

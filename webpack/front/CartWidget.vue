@@ -4,8 +4,8 @@
     <a href="/cart">
         <i class="fa fa-fw fa-shopping-cart"></i>
         {{ title }}
-        <template v-if="item.price">
-            ({{ item.price | price item.currency }})
+        <template v-if="item.price_including_vat">
+            ({{ item.price_including_vat | price item.currency }})
         </template>
     </a>
 
@@ -20,7 +20,7 @@
             return {
                 item : {
                     quantity: 0,
-                    price: 0,
+                    price_including_vat: 0,
                     currency: null,
                 },
             }

@@ -22,7 +22,8 @@ class Cart extends Model
     public function toArray()
     {
         return [
-            'price' => $this->price_including_vat,
+            'price_including_vat' => $this->price_including_vat,
+            'price_excluding_vat' => $this->price_excluding_vat,
             'quantity' => $this->quantity,
             'currency' => config('core.currency'),
             'products' => $this->formatProductsToWidget(),
@@ -44,6 +45,7 @@ class Cart extends Model
                 'name' => $product->name,
                 'code' => $product->code,
                 'quantity' => $product->pivot->quantity,
+                'price_excluding_vat' => $product->price,
                 'price_including_vat' => $product->price_including_vat,
             ];
         }
@@ -61,6 +63,21 @@ class Cart extends Model
 
         foreach ($this->products as $product) {
             $price += $product->price_including_vat * $product->pivot->quantity;
+        }
+
+        return $price;
+    }
+
+    /**
+     * Calculate sum of product price excluding VAT
+     * @return float Total cart price
+     */
+    public function getPriceExcludingVatAttribute()
+    {
+        $price = 0;
+
+        foreach ($this->products as $product) {
+            $price += $product->price * $product->pivot->quantity;
         }
 
         return $price;

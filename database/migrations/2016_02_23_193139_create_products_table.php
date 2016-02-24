@@ -16,7 +16,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('code')->unique();
             $table->string('name');
-            $table->decimal('vat', 4, 2)->unsigned();
+            $table->decimal('vat_rate', 4, 2)->unsigned();
             $table->decimal('price', 9, 2)->unsigned();
             $table->timestamps();
         });

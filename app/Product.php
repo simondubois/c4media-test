@@ -13,7 +13,7 @@ class Product extends Model
      */
     protected $casts = [
         'price' => 'float',
-        'vat' => 'float',
+        'vat_rate' => 'float',
     ];
 
     /**
@@ -23,6 +23,16 @@ class Product extends Model
      */
     public function getPriceIncludingVatAttribute()
     {
-        return $this->price + $this->price * $this->vat / 100;
+        return $this->price + $this->vat;
+    }
+
+    /**
+     * Calculate VAT in price
+     *
+     * @return float VAT portion from price
+     */
+    public function getVatAttribute()
+    {
+        return $this->price * $this->vat_rate / 100;
     }
 }

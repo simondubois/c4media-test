@@ -19,19 +19,19 @@
             <tfoot>
                 <tr>
                     <td colspan="4">Total excl. VAT</td>
-                    <td>{{ item.price - item.vat }}</td>
+                    <td>{{ item.price_excluding_vat | price item.currency }}</td>
                     <td></td>
                 </tr>
 
                 <tr>
                     <td colspan="4">Total VAT</td>
-                    <td>{{ item.vat }}</td>
+                    <td>{{ item.price_including_vat - item.price_excluding_vat | price item.currency }}</td>
                     <td></td>
                 </tr>
 
                 <tr>
                     <td colspan="4">Total incl. VAT</td>
-                    <td>{{ item.price }}</td>
+                    <td>{{ item.price_including_vat | price item.currency }}</td>
                     <td></td>
                 </tr>
             </tfoot>
@@ -51,7 +51,8 @@
             return {
                 item : {
                     quantity: 0,
-                    price: 0,
+                    price_excluding_vat: 0,
+                    price_including_vat: 0,
                     currency: null,
                     vat: 0,
                     products: [],
