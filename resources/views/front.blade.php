@@ -23,7 +23,6 @@
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
-    <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -41,7 +40,7 @@
             <ul class="nav">
                 <li class="active">
                     <a href="/">
-                        <i class="pe-7s-news-paper"></i>
+                        <i class="fa fa-fw fa-list-alt"></i>
                         <p>Product list</p>
                     </a>
                 </li>
