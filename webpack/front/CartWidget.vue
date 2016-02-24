@@ -39,6 +39,11 @@
                 return this.$resource('cart{/id}');
             },
         },
+        watch: {
+            item: function () {
+                this.$dispatch('cart-has-changed')
+            },
+        },
         ready: function() {
             this.resource.get().then(function (response) {
                 this.item = response.data

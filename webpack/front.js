@@ -26,6 +26,10 @@ var frontVm = new Vue({
             // on update-cart event from OrderButton, send back message to CartWidget
             this.$broadcast('update-cart', msg)
         },
+        'cart-has-changed': function (msg) {
+            // on cart-has-changed event from CartWidget, send back message to CartContent
+            this.$broadcast('cart-has-changed', msg)
+        },
         'notify-success': function (msg) {
             this.notify(msg, 'success', 'fa fa-check')
         },
