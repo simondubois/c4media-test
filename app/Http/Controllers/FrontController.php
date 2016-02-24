@@ -22,4 +22,14 @@ class FrontController extends Controller
 
         return view('front.listProducts', $data);
     }
+
+    /**
+     * Display cart content
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showCart()
+    {
+        return view('front.showCart');
+    }
 }

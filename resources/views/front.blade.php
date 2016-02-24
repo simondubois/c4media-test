@@ -38,10 +38,16 @@
             </div>
 
             <ul class="nav">
-                <li class="active">
+                <li class="{{ Request::is('/') ? 'active' : '' }}">
                     <a href="/">
                         <i class="fa fa-fw fa-list-alt"></i>
                         <p>Product list</p>
+                    </a>
+                </li>
+                <li class="{{ Request::is('cart') ? 'active' : '' }}">
+                    <a href="/cart">
+                        <i class="fa fa-fw fa-shopping-cart"></i>
+                        <p>Shopping cart</p>
                     </a>
                 </li>
             </ul>

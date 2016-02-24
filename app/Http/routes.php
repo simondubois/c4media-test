@@ -13,6 +13,8 @@
 
 Route::get('/', 'FrontController@listProducts');
 
+Route::get('/cart', 'FrontController@showCart');
+
 Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
     Route::resource(
         'cart',
