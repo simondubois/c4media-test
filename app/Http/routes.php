@@ -12,3 +12,11 @@
 */
 
 Route::get('/', 'FrontController@listProducts');
+
+Route::group(['prefix' => 'api', 'namespace' => 'Api'], function () {
+    Route::resource(
+        'cart',
+        'CartController',
+        ['only' => ['index', 'store', 'update', 'destroy']]
+    );
+});
