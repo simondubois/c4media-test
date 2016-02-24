@@ -17,6 +17,7 @@ class CreateCartProductTable extends Migration
             $table->integer('cart_id')->unsigned()->index();
             $table->integer('product_id')->unsigned()->index();
             $table->smallInteger('quantity')->unsigned();
+            $table->unique(['cart_id', 'product_id']);
         });
     }
 
