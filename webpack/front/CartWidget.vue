@@ -4,8 +4,8 @@
     <a href="/cart">
         <i class="fa fa-fw fa-shopping-cart"></i>
         {{ title }}
-        <template v-if="totalPrice">
-            ({{ totalPrice | price currency }})
+        <template v-if="item.price">
+            ({{ item.price | price item.currency }})
         </template>
     </a>
 
@@ -18,24 +18,33 @@
     export default {
         data: function () {
             return {
-                productQuantity: 1,
-                totalPrice: 150,
-                currency: 'SEK',
+                item : {
+                    quantity: 0,
+                    price: 0,
+                    currency: null,
+                },
             }
         },
         computed: {
             title: function () {
-                if (this.productQuantity == 0) {
+                if (this.item.quantity == 0) {
                     return 'No product'
                 }
-                if (this.productQuantity == 1) {
-                    return this.productQuantity + ' product'
+                if (this.item.quantity == 1) {
+                    return this.item.quantity + ' product'
                 }
-                return this.productQuantity + ' products'
+                return this.item.quantity + ' products'
             },
             resource: function () {
                 return this.$resource('cart');
             },
+        },
+        ready: function() {
+            this.resource.get().then(function (response) {
+                this.item = response.data
+            }, function (response) {
+                this.$dispatch('notify-danger', "Impossible to get cart information.<br>Error message : " + response.statusText)
+            });
         },
         events: {
             'update-cart': function (msg) {
@@ -52,11 +61,10 @@
                     quantity: quantity,
                 }
                 this.resource.save({}, entity).then(function (response) {
-                    // success callback
-                    console.log(response)
+                    this.item = response.data
+                    this.$dispatch('notify-success', "The product has been added to your cart.")
                 }, function (response) {
-                    // error callback
-                    console.log(response)
+                    this.$dispatch('notify-danger', "Impossible to add this product to your cart.<br>Error message : " + response.statusText)
                 });
             }
         },

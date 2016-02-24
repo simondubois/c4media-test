@@ -9772,8 +9772,31 @@
 	        'update-cart': function (msg) {
 	            // on update-cart event from OrderButton, send back message to CartWidget
 	            this.$broadcast('update-cart', msg)
+	        },
+	        'notify-success': function (msg) {
+	            this.notify('success', msg)
+	        },
+	        'notify-danger': function (msg) {
+	            console.log(1)
+	            this.notify('danger', msg)
+	        },
+	    },
+	    methods: {
+	        notify: function (type, msg) {
+	            $.notify({
+	                icon: 'fa fa-check',
+	                message: msg,
+	            },{
+	                type: type,
+	                placement: {
+	                    from: 'bottom',
+	                    align: 'center',
+	                },
+	                delay: 3000
+	            });
 	        }
-	    }
+
+	    },
 	})
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
@@ -9818,24 +9841,33 @@
 	exports.default = {
 	    data: function data() {
 	        return {
-	            productQuantity: 1,
-	            totalPrice: 150,
-	            currency: 'SEK'
+	            item: {
+	                quantity: 0,
+	                price: 0,
+	                currency: null
+	            }
 	        };
 	    },
 	    computed: {
 	        title: function title() {
-	            if (this.productQuantity == 0) {
+	            if (this.item.quantity == 0) {
 	                return 'No product';
 	            }
-	            if (this.productQuantity == 1) {
-	                return this.productQuantity + ' product';
+	            if (this.item.quantity == 1) {
+	                return this.item.quantity + ' product';
 	            }
-	            return this.productQuantity + ' products';
+	            return this.item.quantity + ' products';
 	        },
 	        resource: function resource() {
 	            return this.$resource('cart');
 	        }
+	    },
+	    ready: function ready() {
+	        this.resource.get().then(function (response) {
+	            this.item = response.data;
+	        }, function (response) {
+	            this.$dispatch('notify-danger', "Impossible to get cart information.<br>Error message : " + response.statusText);
+	        });
 	    },
 	    events: {
 	        'update-cart': function updateCart(msg) {
@@ -9851,9 +9883,10 @@
 	                quantity: quantity
 	            };
 	            this.resource.save({}, entity).then(function (response) {
-	                console.log(response);
+	                this.item = response.data;
+	                this.$dispatch('notify-success', "The product has been added to your cart.");
 	            }, function (response) {
-	                console.log(response);
+	                this.$dispatch('notify-danger', "Impossible to add this product to your cart.<br>Error message : " + response.statusText);
 	            });
 	        }
 	    }
@@ -9863,7 +9896,7 @@
 /* 6 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"totalPrice\">\n        ({{ totalPrice | price currency }})\n    </template>\n</a>\n\n";
+	module.exports = "\n\n<a href=\"/cart\">\n    <i class=\"fa fa-fw fa-shopping-cart\"></i>\n    {{ title }}\n    <template v-if=\"item.price\">\n        ({{ item.price | price item.currency }})\n    </template>\n</a>\n\n";
 
 /***/ },
 /* 7 */

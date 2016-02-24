@@ -12,11 +12,12 @@ class CartController extends Controller
     /**
      * Show session cart information
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Cart::retrieveFromSession()->toWidget();
+        return $this->getCartFromSession($request)->toWidget();
     }
 
     /**
