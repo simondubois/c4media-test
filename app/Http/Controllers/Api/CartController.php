@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Cart;
+use App\Product;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->getCartFromSession($request)->toWidget();
+        return $this->getCartFromSession($request);
     }
 
     /**
@@ -28,22 +29,23 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        // Retrieve records from database
         $cart = $this->getCartFromSession($request);
+        $product = $cart->products()->find($request->productId);
 
-        // Update existing pivot if product already in cart
-        foreach ($cart->products as $product) {
-            if ($product->id == $request->productId) {
-                $quantity = $product->pivot->quantity + $request->quantity;
-                $cart->products()->updateExistingPivot($product->id, ['quantity' => $quantity]);
-                $this->saveCartToSession($cart, $request);
-                return $cart->toWidget();
-            }
+        // Update relations
+        if ($product instanceof Product) {
+            $cart->products()->updateExistingPivot(
+                $product->id,
+                ['quantity' => $product->pivot->quantity + $request->quantity]
+            );
+        } else {
+            $cart->products()->attach($request->productId, ['quantity' => $request->quantity]);
         }
 
-        // Insert a new pivot if product not already in chart
-        $cart->products()->attach($request->productId, ['quantity' => $request->quantity]);
+        // Save modifications to database & session
         $this->saveCartToSession($cart, $request);
-        return $cart->toWidget();
+        return $cart;
     }
 
     /**
@@ -53,9 +55,24 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $product_id)
     {
-        //
+        // Retrieve records from database
+        $cart = $this->getCartFromSession($request);
+        $product = $cart->products()->find($product_id);
+
+        // Update relations
+        if ($request->quantity === 0) {
+            $cart->products()->detach($product_id);
+        } elseif ($product instanceof Product) {
+            $cart->products()->updateExistingPivot($product->id, ['quantity' => $request->quantity]);
+        } else {
+            $cart->products()->attach($product_id, ['quantity' => $request->quantity]);
+        }
+
+        // Save modifications to database & session
+        $this->saveCartToSession($cart, $request);
+        return $cart;
     }
 
     /**

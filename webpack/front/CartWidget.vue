@@ -36,7 +36,7 @@
                 return this.item.quantity + ' products'
             },
             resource: function () {
-                return this.$resource('cart');
+                return this.$resource('cart{/id}');
             },
         },
         ready: function() {
@@ -51,6 +51,8 @@
                 // on update-cart event, update cart on server
                 if (msg.action === 'add') {
                     this.addProduct(msg.productId, msg.quantity)
+                } else if (msg.action === 'update') {
+                    this.updateProduct(msg.productId, msg.quantity)
                 }
             },
         },
@@ -65,6 +67,19 @@
                     this.$dispatch('notify-success', "The product has been added to your cart.")
                 }, function (response) {
                     this.$dispatch('notify-danger', "Impossible to add this product to your cart.<br>Error message : " + response.statusText)
+                });
+            },
+            updateProduct: function (productId, quantity) {
+                var entity = {
+                    productId: productId,
+                    quantity: quantity,
+                    _method: 'PUT',
+                }
+                this.resource.save({id: productId}, entity).then(function (response) {
+                    this.item = response.data
+                    this.$dispatch('notify-success', "The product has been updated in your cart.")
+                }, function (response) {
+                    this.$dispatch('notify-danger', "Impossible to update this product in your cart.<br>Error message : " + response.statusText)
                 });
             }
         },

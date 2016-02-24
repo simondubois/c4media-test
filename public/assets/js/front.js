@@ -9750,9 +9750,10 @@
 	/* WEBPACK VAR INJECTION */(function(Vue) {
 	var CartWidget = __webpack_require__(4)
 	var OrderButton = __webpack_require__(7)
+	var CartContent = __webpack_require__(10)
 
 	// Setup vue-resource
-	Vue.use(__webpack_require__(10))
+	Vue.use(__webpack_require__(16))
 	Vue.http.options.root = '/api'
 	Vue.http.options.headers['X-CSRF-TOKEN'] = document.querySelectorAll('meta[name="csrf-token"]')[0].getAttribute('content')
 
@@ -9767,6 +9768,7 @@
 	    components: {
 	        cartwidget: CartWidget,
 	        orderbutton: OrderButton,
+	        cartcontent: CartContent,
 	    },
 	    events: {
 	        'update-cart': function (msg) {
@@ -9777,7 +9779,6 @@
 	            this.notify(msg, 'success', 'fa fa-check')
 	        },
 	        'notify-danger': function (msg) {
-	            console.log(1)
 	            this.notify(msg, 'danger', 'fa fa-times')
 	        },
 	    },
@@ -9859,7 +9860,7 @@
 	            return this.item.quantity + ' products';
 	        },
 	        resource: function resource() {
-	            return this.$resource('cart');
+	            return this.$resource('cart{/id}');
 	        }
 	    },
 	    ready: function ready() {
@@ -9873,6 +9874,8 @@
 	        'update-cart': function updateCart(msg) {
 	            if (msg.action === 'add') {
 	                this.addProduct(msg.productId, msg.quantity);
+	            } else if (msg.action === 'update') {
+	                this.updateProduct(msg.productId, msg.quantity);
 	            }
 	        }
 	    },
@@ -9887,6 +9890,19 @@
 	                this.$dispatch('notify-success', "The product has been added to your cart.");
 	            }, function (response) {
 	                this.$dispatch('notify-danger', "Impossible to add this product to your cart.<br>Error message : " + response.statusText);
+	            });
+	        },
+	        updateProduct: function updateProduct(productId, quantity) {
+	            var entity = {
+	                productId: productId,
+	                quantity: quantity,
+	                _method: 'PUT'
+	            };
+	            this.resource.save({ id: productId }, entity).then(function (response) {
+	                this.item = response.data;
+	                this.$dispatch('notify-success', "The product has been updated in your cart.");
+	            }, function (response) {
+	                this.$dispatch('notify-danger', "Impossible to update this product in your cart.<br>Error message : " + response.statusText);
 	            });
 	        }
 	    }
@@ -9938,15 +9954,30 @@
 	exports.default = {
 	    props: ['productId', 'inputQuantity', 'action'],
 	    computed: {
-	        quantity: function quantity() {
-	            return $(this.inputQuantity).val();
+	        title: function title() {
+	            if (this.action === 'add') {
+	                return 'Add to card';
+	            }
+	            if (this.action === 'update') {
+	                return 'Update card';
+	            }
 	        },
-	        message: function message() {
-	            return {
-	                action: this.action,
-	                productId: this.productId,
-	                quantity: this.quantity
-	            };
+	        quantity: {
+	            cache: false,
+	            get: function get() {
+	                console.log($(this.inputQuantity).val());
+	                return $(this.inputQuantity).val();
+	            }
+	        },
+	        message: {
+	            cache: false,
+	            get: function get() {
+	                return {
+	                    action: this.action,
+	                    productId: this.productId,
+	                    quantity: this.quantity
+	                };
+	            }
 	        }
 	    },
 	    methods: {
@@ -9960,10 +9991,139 @@
 /* 9 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n<button class='btn btn-primary' v-on:click=\"updateCart\">\n    <i class='fa fa-fw fa-cart-plus'></i>\n    Add to card\n</button>\n\n";
+	module.exports = "\n\n<button class='btn btn-primary' v-on:click=\"updateCart\">\n    <i class='fa fa-fw fa-cart-plus'></i>\n    {{ title }}\n</button>\n\n";
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(11)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] webpack/front/CartContent.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(15)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/sel/www/c4media-test/webpack/front/CartContent.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+
+	var Product = __webpack_require__(12);
+
+	exports.default = {
+	    data: function data() {
+	        return {
+	            item: {
+	                quantity: 0,
+	                price: 0,
+	                currency: null,
+	                products: []
+	            }
+	        };
+	    },
+	    computed: {
+	        resource: function resource() {
+	            return this.$resource('cart');
+	        }
+	    },
+	    ready: function ready() {
+	        this.resource.get().then(function (response) {
+	            this.item = response.data;
+	        }, function (response) {
+	            this.$dispatch('notify-danger', "Impossible to get cart information.<br>Error message : " + response.statusText);
+	        });
+	    },
+	    components: {
+	        product: Product
+	    }
+	};
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(13)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] webpack/front/CartContentProduct.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(14)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), true)
+	  if (!hotAPI.compatible) return
+	  var id = "/home/sel/www/c4media-test/webpack/front/CartContentProduct.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+
+	var OrderButton = __webpack_require__(7);
+
+	exports.default = {
+	    props: ['item', 'currency'],
+	    'components': {
+	        'orderbutton': OrderButton
+	    }
+	};
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<tr>\n    <td>{{ item.name }}</td>\n    <td>{{ item.code }}</td>\n    <td>{{ item.price_including_vat | price currency }}</td>\n    <td class=\"form-group\">\n        <input type=\"text\" class=\"form-control\" id=\"quantity-product-{{ item.id }}\" value=\"{{ item.quantity }}\" size=\"3\">\n    </td>\n    <td>\n        <orderbutton\n            :product-id=\"item.id\"\n            :input-quantity=\"'#quantity-product-'+item.id\"\n            action='update'\n        ></orderbutton>\n    </td>\n</tr>\n\n";
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	module.exports = "\n\n<div class=\"table-responsive\">\n    <table class=\"table table-hover table-striped\">\n        <thead>\n            <th>Name</th>\n            <th>Code</th>\n            <th>VAT</th>\n            <th>Price (incl. VAT)</th>\n            <th>Quantity</th>\n            <th>Order</th>\n        </thead>\n        <tbody>\n            <template v-for=\"product in item.products\">\n                <product :item=\"product\" :currency=\"item.currency\"></product>\n            </template>\n        </tbody>\n    </table>\n</div>\n\n";
+
+/***/ },
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(Vue) {/**
@@ -9972,16 +10132,16 @@
 
 	function install(Vue) {
 
-	    var _ = __webpack_require__(11);
+	    var _ = __webpack_require__(17);
 
 	    _.config = Vue.config;
 	    _.warning = Vue.util.warn;
 	    _.nextTick = Vue.util.nextTick;
 
-	    Vue.url = __webpack_require__(12);
-	    Vue.http = __webpack_require__(18);
-	    Vue.resource = __webpack_require__(33);
-	    Vue.Promise = __webpack_require__(20);
+	    Vue.url = __webpack_require__(18);
+	    Vue.http = __webpack_require__(24);
+	    Vue.resource = __webpack_require__(39);
+	    Vue.Promise = __webpack_require__(26);
 
 	    Object.defineProperties(Vue.prototype, {
 
@@ -10023,7 +10183,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 11 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/**
@@ -10151,14 +10311,14 @@
 
 
 /***/ },
-/* 12 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Service for URL templating.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 	var ie = document.documentMode;
 	var el = document.createElement('a');
 
@@ -10194,10 +10354,10 @@
 	 */
 
 	Url.transforms = [
-	    __webpack_require__(13),
-	    __webpack_require__(15),
-	    __webpack_require__(16),
-	    __webpack_require__(17)
+	    __webpack_require__(19),
+	    __webpack_require__(21),
+	    __webpack_require__(22),
+	    __webpack_require__(23)
 	];
 
 	/**
@@ -10287,14 +10447,14 @@
 
 
 /***/ },
-/* 13 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * URL Template (RFC 6570) Transform.
 	 */
 
-	var UrlTemplate = __webpack_require__(14);
+	var UrlTemplate = __webpack_require__(20);
 
 	module.exports = function (options) {
 
@@ -10309,7 +10469,7 @@
 
 
 /***/ },
-/* 14 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/**
@@ -10465,14 +10625,14 @@
 
 
 /***/ },
-/* 15 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Legacy Transform.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = function (options, next) {
 
@@ -10517,14 +10677,14 @@
 
 
 /***/ },
-/* 16 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Query Parameter Transform.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = function (options, next) {
 
@@ -10547,14 +10707,14 @@
 
 
 /***/ },
-/* 17 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Root Prefix Transform.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = function (options, next) {
 
@@ -10569,17 +10729,17 @@
 
 
 /***/ },
-/* 18 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Service for sending network requests.
 	 */
 
-	var _ = __webpack_require__(11);
-	var Client = __webpack_require__(19);
-	var Promise = __webpack_require__(20);
-	var interceptor = __webpack_require__(23);
+	var _ = __webpack_require__(17);
+	var Client = __webpack_require__(25);
+	var Promise = __webpack_require__(26);
+	var interceptor = __webpack_require__(29);
 	var jsonType = {'Content-Type': 'application/json'};
 
 	function Http(url, options) {
@@ -10632,13 +10792,13 @@
 	};
 
 	Http.interceptors = [
-	    __webpack_require__(24),
-	    __webpack_require__(25),
-	    __webpack_require__(26),
-	    __webpack_require__(28),
-	    __webpack_require__(29),
 	    __webpack_require__(30),
-	    __webpack_require__(31)
+	    __webpack_require__(31),
+	    __webpack_require__(32),
+	    __webpack_require__(34),
+	    __webpack_require__(35),
+	    __webpack_require__(36),
+	    __webpack_require__(37)
 	];
 
 	Http.headers = {
@@ -10673,16 +10833,16 @@
 
 
 /***/ },
-/* 19 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Base client.
 	 */
 
-	var _ = __webpack_require__(11);
-	var Promise = __webpack_require__(20);
-	var xhrClient = __webpack_require__(22);
+	var _ = __webpack_require__(17);
+	var Promise = __webpack_require__(26);
+	var xhrClient = __webpack_require__(28);
 
 	module.exports = function (request) {
 
@@ -10744,15 +10904,15 @@
 
 
 /***/ },
-/* 20 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Promise adapter.
 	 */
 
-	var _ = __webpack_require__(11);
-	var PromiseObj = window.Promise || __webpack_require__(21);
+	var _ = __webpack_require__(17);
+	var PromiseObj = window.Promise || __webpack_require__(27);
 
 	function Promise(executor, context) {
 
@@ -10859,14 +11019,14 @@
 
 
 /***/ },
-/* 21 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	var RESOLVED = 0;
 	var REJECTED = 1;
@@ -11044,15 +11204,15 @@
 
 
 /***/ },
-/* 22 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * XMLHttp client.
 	 */
 
-	var _ = __webpack_require__(11);
-	var Promise = __webpack_require__(20);
+	var _ = __webpack_require__(17);
+	var Promise = __webpack_require__(26);
 
 	module.exports = function (request) {
 	    return new Promise(function (resolve) {
@@ -11100,15 +11260,15 @@
 
 
 /***/ },
-/* 23 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Interceptor factory.
 	 */
 
-	var _ = __webpack_require__(11);
-	var Promise = __webpack_require__(20);
+	var _ = __webpack_require__(17);
+	var Promise = __webpack_require__(26);
 
 	module.exports = function (handler, vm) {
 
@@ -11151,14 +11311,14 @@
 
 
 /***/ },
-/* 24 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Before Interceptor.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = {
 
@@ -11175,7 +11335,7 @@
 
 
 /***/ },
-/* 25 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/**
@@ -11211,14 +11371,14 @@
 
 
 /***/ },
-/* 26 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * JSONP Interceptor.
 	 */
 
-	var jsonpClient = __webpack_require__(27);
+	var jsonpClient = __webpack_require__(33);
 
 	module.exports = {
 
@@ -11235,15 +11395,15 @@
 
 
 /***/ },
-/* 27 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * JSONP client.
 	 */
 
-	var _ = __webpack_require__(11);
-	var Promise = __webpack_require__(20);
+	var _ = __webpack_require__(17);
+	var Promise = __webpack_require__(26);
 
 	module.exports = function (request) {
 	    return new Promise(function (resolve) {
@@ -11289,7 +11449,7 @@
 
 
 /***/ },
-/* 28 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/**
@@ -11312,14 +11472,14 @@
 
 
 /***/ },
-/* 29 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Mime Interceptor.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = {
 
@@ -11354,14 +11514,14 @@
 
 
 /***/ },
-/* 30 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Header Interceptor.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	module.exports = {
 
@@ -11386,15 +11546,15 @@
 
 
 /***/ },
-/* 31 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * CORS Interceptor.
 	 */
 
-	var _ = __webpack_require__(11);
-	var xdrClient = __webpack_require__(32);
+	var _ = __webpack_require__(17);
+	var xdrClient = __webpack_require__(38);
 	var xhrCors = 'withCredentials' in new XMLHttpRequest();
 	var originUrl = _.url.parse(location.href);
 
@@ -11429,15 +11589,15 @@
 
 
 /***/ },
-/* 32 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * XDomain client (Internet Explorer).
 	 */
 
-	var _ = __webpack_require__(11);
-	var Promise = __webpack_require__(20);
+	var _ = __webpack_require__(17);
+	var Promise = __webpack_require__(26);
 
 	module.exports = function (request) {
 	    return new Promise(function (resolve) {
@@ -11472,14 +11632,14 @@
 
 
 /***/ },
-/* 33 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Service for interacting with RESTful services.
 	 */
 
-	var _ = __webpack_require__(11);
+	var _ = __webpack_require__(17);
 
 	function Resource(url, params, actions, options) {
 

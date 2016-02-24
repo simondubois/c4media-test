@@ -3,7 +3,7 @@
 
     <button class='btn btn-primary' v-on:click="updateCart">
         <i class='fa fa-fw fa-cart-plus'></i>
-        Add to card
+        {{ title }}
     </button>
 
 </template>
@@ -15,17 +15,32 @@
     export default {
         props: ['productId', 'inputQuantity', 'action'],
         computed: {
-            quantity: function () {
-                // get quantity from input element
-                return $(this.inputQuantity).val()
-            },
-            message: function () {
-                // message to send to parent on button click
-                return {
-                    action: this.action,
-                    productId: this.productId,
-                    quantity: this.quantity,
+            title: function () {
+                if (this.action === 'add') {
+                    return 'Add to card'
                 }
+                if (this.action === 'update') {
+                    return 'Update card'
+                }
+            },
+            quantity: {
+                cache: false,
+                get: function () {
+                    // get quantity from input element
+                    console.log($(this.inputQuantity).val())
+                    return $(this.inputQuantity).val()
+                },
+            },
+            message: {
+                cache: false,
+                get: function () {
+                    // message to send to parent on button click
+                    return {
+                        action: this.action,
+                        productId: this.productId,
+                        quantity: this.quantity,
+                    }
+                },
             },
         },
         methods: {

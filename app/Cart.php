@@ -15,17 +15,40 @@ class Cart extends Model
     }
 
     /**
-     * Get information for widget
+     * Format information to send back through API
      *
-     * @return array Total number of products & total price
+     * @return array Exposed cart information
      */
-    public function toWidget()
+    public function toArray()
     {
         return [
             'price' => $this->price_including_vat,
             'quantity' => $this->quantity,
             'currency' => config('core.currency'),
+            'products' => $this->formatProductsToWidget(),
         ];
+    }
+
+    /**
+     * Format products to send back through API
+     *
+     * @return array Exposed product information
+     */
+    private function formatProductsToWidget()
+    {
+        $products = [];
+
+        foreach ($this->products as $product) {
+            $products[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'code' => $product->code,
+                'quantity' => $product->pivot->quantity,
+                'price_including_vat' => $product->price_including_vat,
+            ];
+        }
+
+        return $products;
     }
 
     /**

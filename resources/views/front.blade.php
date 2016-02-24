@@ -70,7 +70,7 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                           <cartwidget v-ref:cartwidget></cartwidget>
+                           <cartwidget></cartwidget>
                         </li>
                     </ul>
                 </div>

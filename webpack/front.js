@@ -1,6 +1,7 @@
 
 var CartWidget = require('./front/CartWidget.vue')
 var OrderButton = require('./front/OrderButton.vue')
+var CartContent = require('./front/CartContent.vue')
 
 // Setup vue-resource
 Vue.use(require('vue-resource'))
@@ -18,6 +19,7 @@ var frontVm = new Vue({
     components: {
         cartwidget: CartWidget,
         orderbutton: OrderButton,
+        cartcontent: CartContent,
     },
     events: {
         'update-cart': function (msg) {
@@ -28,7 +30,6 @@ var frontVm = new Vue({
             this.notify(msg, 'success', 'fa fa-check')
         },
         'notify-danger': function (msg) {
-            console.log(1)
             this.notify(msg, 'danger', 'fa fa-times')
         },
     },
