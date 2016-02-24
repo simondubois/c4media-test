@@ -9774,17 +9774,17 @@
 	            this.$broadcast('update-cart', msg)
 	        },
 	        'notify-success': function (msg) {
-	            this.notify('success', msg)
+	            this.notify(msg, 'success', 'fa fa-check')
 	        },
 	        'notify-danger': function (msg) {
 	            console.log(1)
-	            this.notify('danger', msg)
+	            this.notify(msg, 'danger', 'fa fa-times')
 	        },
 	    },
 	    methods: {
-	        notify: function (type, msg) {
+	        notify: function (msg, type, icon) {
 	            $.notify({
-	                icon: 'fa fa-check',
+	                icon: icon,
 	                message: msg,
 	            },{
 	                type: type,
