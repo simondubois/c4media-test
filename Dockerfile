@@ -58,3 +58,6 @@ RUN groupadd -r -g 1000 docker \
 
 ADD https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh /home/docker/.bash_gitprompt
 RUN chmod a+r /home/docker/.bash_gitprompt
+
+ENV APACHE_RUN_USER docker
+ENV APACHE_RUN_GROUP docker
