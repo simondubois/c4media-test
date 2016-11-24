@@ -18,13 +18,10 @@ RUN apt-get install -y locales \
 
 RUN apt-get install -y nano
 
-RUN apt-get install -y trash-cli
-
 RUN apt-get install -y git
 
-RUN apt-get install -y mysql-client
-
-RUN docker-php-ext-install pdo pdo_mysql
+RUN apt-get install -y mysql-client \
+    && docker-php-ext-install pdo pdo_mysql
 
 RUN apt-get install -y zlib1g-dev \
     && docker-php-ext-install zip
@@ -42,7 +39,9 @@ RUN pear install PHP_CodeSniffer
 
 RUN echo "log_errors = On" >> /usr/local/etc/php/php.ini \
     && echo "error_reporting = E_ALL" >> /usr/local/etc/php/php.ini \
-    && echo "error_log = /dev/stderr" >> /usr/local/etc/php/php.ini
+    && echo "error_log = /dev/stderr" >> /usr/local/etc/php/php.ini \
+    && echo "upload_max_filesize = 16M" >> /usr/local/etc/php/php.ini \
+    && echo "post_max_size = 16M" >> /usr/local/etc/php/php.ini
 
 ADD https://raw.githubusercontent.com/jamesob/desk/master/desk /usr/local/bin/desk
 RUN chmod a+rx /usr/local/bin/desk
